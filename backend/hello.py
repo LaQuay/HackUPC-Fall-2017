@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
 import json
 
 app = Flask(__name__)
@@ -15,6 +16,8 @@ def clear_db():
     users.drop()
     questions = mongo.db.questions
     questions.drop()
+    answers = mongo.db.answers
+    answers.drop()
     return "Clear done"
 
 ########################################################################################################################
@@ -58,7 +61,7 @@ def get_all_questions():
     output = []
     for s in questionsDB.find():
         print s
-        output.append({'text' : s['text'], 'user' : s['user']})
+        output.append({'_id': str(s['_id']), 'text' : s['text'], 'user' : s['user']})
     return jsonify({'result' : output})
 
 @app.route('/question/<username>', methods=['POST'])
@@ -68,7 +71,35 @@ def add_question(username):
     text = request.json['text']
     question = questionsDB.insert({'text': text, 'user': username})
     new_question = questionsDB.find_one({'_id': question })
-    output = {'text' : new_question['text']}
+    output = {'_id': str(question), 'text' : new_question['text']}
+    return jsonify({'result' : output})
+
+########################################################################################################################
+## ANSWERS
+########################################################################################################################
+
+@app.route('/answers/<questionid>', methods=['GET'])
+def get_all_answers(questionid):
+    questionsDB = mongo.db.questions
+    s1 = questionsDB.find_one({'_id': ObjectId(questionid)})
+    if s1:
+        answersDB = mongo.db.answers
+        output = {"question": s1['text'], "answers": []}
+        for s2 in answersDB.find({'questionId': questionid}):
+            output['answers'].append({'user': s2['user'], 'text': s2['text']})
+    else:
+        output = "No such question"
+
+    return jsonify({'result' : output})
+
+@app.route('/answer/<username>/<questionid>', methods=['POST'])
+def add_answer(username, questionid):
+    #TODO: check user and question exist
+    answersDB = mongo.db.answers
+    text = request.json['text']
+    answer = answersDB.insert({'text': text, 'user': username, 'questionId': questionid})
+    new_answer = answersDB.find_one({'_id': answer })
+    output = {'text' : new_answer['text']}
     return jsonify({'result' : output})
 
 ########################################################################################################################
