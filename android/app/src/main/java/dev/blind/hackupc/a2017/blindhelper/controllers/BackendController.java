@@ -57,6 +57,8 @@ public class BackendController {
     public static final String GET_IMAGE_URL = BASE_URL + "image/";
     public static final String ADD_IMAGE_URL = BASE_URL + "image";
 
+    public static final String IMAGE_URL = BASE_URL + "image";
+
     public static void addQuestion(String userName, String questionToUpload, String imageURIToUpload, ResponseServerCallback responseServerCallback) {
         Log.e(TAG, "Sending to server -addQuestion-: " + userName + ", " + questionToUpload + ", " + imageURIToUpload);
         PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
