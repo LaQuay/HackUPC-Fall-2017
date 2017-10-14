@@ -6,12 +6,12 @@
     android:orientation="vertical"
     android:padding="15dp">
 
-    <TextView
+    <dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView
         android:id="@+id/where_i_am_lat_lng_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView
         android:id="@+id/where_i_am_address_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

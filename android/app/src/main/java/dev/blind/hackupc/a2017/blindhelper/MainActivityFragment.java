@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -21,9 +22,11 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
+import dev.blind.hackupc.a2017.blindhelper.components.SpeechButton;
 import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.ImageController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.OCRController;
+import dev.blind.hackupc.a2017.blindhelper.controllers.TextToSpeechController;
 import dev.blind.hackupc.a2017.blindhelper.utils.ImageUtils;
 
 public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback, dev.blind.hackupc.a2017.blindhelper.controllers.OCRController.OCRResolvedCallback {
@@ -34,10 +37,10 @@ public class MainActivityFragment extends Fragment implements BackendController.
     private static final int PHOTO_SCALED_HEIGHT = 480;
     private static final String OCR_LANGUAGE = "eng"; // En ISO 639-2/B
     private View rootview;
-    private Button buttonWhereIAm;
-    private Button buttonAroundMe;
-    private Button buttonBeMyEyes;
-    private Button buttonReadForMe;
+    private SpeechButton buttonWhereIAm;
+    private SpeechButton buttonAroundMe;
+    private SpeechButton buttonBeMyEyes;
+    private SpeechButton buttonReadForMe;
 
     private Uri outputFileUri;
     private String cameraDirectory;

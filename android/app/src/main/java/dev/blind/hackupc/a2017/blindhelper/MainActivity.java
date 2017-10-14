@@ -15,6 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.blind.hackupc.a2017.blindhelper.controllers.TextToSpeechController;
+
 public class MainActivity extends AppCompatActivity {
     public static final int MULTIPLE_PERMISSIONS_CODE = 10;
     public static final int CAMERA_PERMISSION_CODE = 200;
@@ -44,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        TextToSpeechController.getInstance(this).stop();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.app_bar_menu, menu);
         modeItem = menu.findItem(R.id.app_mode);
@@ -62,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     modeItem.setTitle("BLIND MODE");
                     fragment = MainActivityFragment.newInstance();
                     fragmentTAG = MainActivityFragment.TAG;
-                }
-                else {
+                } else {
                     modeItem.setTitle("HELPER MODE");
                     fragment = MainActivityFragmentHelper.newInstance();
                     fragmentTAG = MainActivityFragmentHelper.TAG;
