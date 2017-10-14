@@ -87,7 +87,7 @@ def add_question(username):
             output = 'No selected image'
         if f:
             questionsDB = mongo.db.questions
-            text = request.files.get('text')
+            text = request.form['text']
             question = questionsDB.insert({'text': text, 'user': username})
             new_question = questionsDB.find_one({'_id': question})
             output = {'_id': str(question), 'text': new_question['text']}
