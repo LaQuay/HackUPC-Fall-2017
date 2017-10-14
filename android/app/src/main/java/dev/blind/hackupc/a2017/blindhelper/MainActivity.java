@@ -2,31 +2,18 @@ package dev.blind.hackupc.a2017.blindhelper;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.blind.hackupc.a2017.blindhelper.controllers.GeocodingController;
-import dev.blind.hackupc.a2017.blindhelper.controllers.LocationController;
-import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
-import dev.blind.hackupc.a2017.blindhelper.model.MyLocation;
-
-public class MainActivity extends AppCompatActivity implements LocationController.OnNewLocationCallback {
+public class MainActivity extends AppCompatActivity {
     public static final int MULTIPLE_PERMISSIONS_CODE = 10;
     public static final int CAMERA_PERMISSION_CODE = 200;
     public static final int WRITE_SD_PERMISSION_CODE = 201;
@@ -43,32 +30,12 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
         setContentView(R.layout.activity_main);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!requestPermissions()) {
-                LocationController.getInstance(this).startLocation(this);
-            }
+            requestPermissions();
         }
 
         Fragment newFragment = new MainActivityFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(android.R.id.content, newFragment).commit();
-    }
-
-    public void makeRequestGoogle(String url) {
-        Log.e(TAG, url);
-
-        JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                MyLocation currentMyLocation = GeocodingController.getLocationFromGoogleJSON(jsonObject);
-                Log.e(TAG, currentMyLocation.getAddress());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                VolleyController.getInstance(getApplicationContext()).onConnectionFailed(volleyError.toString());
-            }
-        });
-        VolleyController.getInstance(this).addToQueue(request);
     }
 
     public boolean requestPermissions() {
@@ -111,23 +78,8 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
                             }
                         }
                     }
-                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    for (String permission : permissions) {
-                        if (permission.contains("LOCATION")) {
-                            LocationController.getInstance(this).startLocation(this);
-                        }
-                    }
                 }
             }
         }
-    }
-
-    @Override
-    public void onNewLocation(Location location) {
-        Log.e(TAG, "Location: " + location.getLatitude() + ", " + location.getLongitude());
-        LocationController.getInstance(this).stopLocation();
-
-        makeRequestGoogle(
-                GeocodingController.getGoogleApiByLatLng(location.getLatitude(), location.getLongitude()));
     }
 }
