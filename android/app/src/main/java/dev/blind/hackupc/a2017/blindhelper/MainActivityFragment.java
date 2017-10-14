@@ -3,7 +3,6 @@ package dev.blind.hackupc.a2017.blindhelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,16 +18,18 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
+import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.ImageController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.TessOCRController;
-import dev.blind.hackupc.a2017.blindhelper.utils.UriUtils;
+import dev.blind.hackupc.a2017.blindhelper.utils.ImageUtils;
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback {
     private static final String TAG = MainActivityFragment.class.getSimpleName();
-    private static final int GALLERY_PHOTO_CODE = 100;
-    private static final int CAMERA_PHOTO_CODE = 101;
+    private static final int CAMERA_PHOTO_CODE_EYES = 100;
+    private static final int CAMERA_PHOTO_CODE_READ = 101;
+    private static int PHOTO_SCALED_WIDTH = 854;
+    private static int PHOTO_SCALED_HEIGHT = 480;
     private View rootview;
     private Button buttonWhereIAm;
     private Button buttonAroundMe;
@@ -91,6 +92,7 @@ public class MainActivityFragment extends Fragment {
                 ft.replace(R.id.main_container, fragment, KeyboardSearchFragment.TAG);
                 ft.addToBackStack(null);
                 ft.commit();*/
+                makePhotoCamera();
             }
         });
 
@@ -111,7 +113,7 @@ public class MainActivityFragment extends Fragment {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
-            startActivityForResult(cameraIntent, CAMERA_PHOTO_CODE);
+            startActivityForResult(cameraIntent, CAMERA_PHOTO_CODE_EYES);
         }
     }
 
@@ -125,40 +127,21 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    private void openImageChooser() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, GALLERY_PHOTO_CODE);
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GALLERY_PHOTO_CODE) {
-                try {
-                    Uri imageUri = data.getData();
-                    String realUri = UriUtils.getRealPathFromUri(imageUri, getContext());
-                    InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
-
-                    Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                    //Bitmap scaledBitmap = ImageUtils.scaleBitmap(selectedImage, PHOTO_SCALED_WIDTH, PHOTO_SCALED_HEIGHT);
-                    //ImageUtils.compressBitmap(new File(realUri), scaledBitmap);
-                    //uploadImageToAPI(realUri);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
-                }
-            } else if (requestCode == CAMERA_PHOTO_CODE) {
+            if (requestCode == CAMERA_PHOTO_CODE_EYES || requestCode == CAMERA_PHOTO_CODE_READ) {
                 try {
                     Bitmap selectedImage = readImageFromResources(outputFileUri);
 
-                    //Bitmap scaledBitmap = ImageUtils.scaleBitmap(selectedImage, PHOTO_SCALED_WIDTH, PHOTO_SCALED_HEIGHT);
-                    //ImageUtils.compressBitmap(new File(outputFileUri.getPath()), scaledBitmap);
-                    //uploadImageToAPI(outputFileUri.getPath());
+                    Bitmap scaledBitmap = ImageUtils.scaleBitmap(selectedImage, PHOTO_SCALED_WIDTH, PHOTO_SCALED_HEIGHT);
+                    ImageUtils.compressBitmap(new File(outputFileUri.getPath()), scaledBitmap);
 
-                    String ocrResult = tessOCRController.getOCRResult(selectedImage);
-                    Log.e(TAG, "OCR Result");
+                    if (requestCode == CAMERA_PHOTO_CODE_EYES) {
+                        uploadImageToAPI(outputFileUri.getPath());
+                    } else {
+                        Log.e(TAG, "OCR Result");
+                        String ocrResult = tessOCRController.getOCRResult(selectedImage);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
@@ -169,7 +152,18 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    public void uploadImageToAPI(String uriToUpload) {
+        Toast.makeText(getActivity(), "Uploading photo", Toast.LENGTH_SHORT).show();
+
+        BackendController.addQuestion("usuario123", "Pregunta de prueba", uriToUpload, this);
+    }
+
     private Bitmap readImageFromResources(Uri uriToRead) throws IOException {
         return MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uriToRead);
+    }
+
+    @Override
+    public void onResponseServer(String message) {
+        Log.e(TAG, "RESPONSE FROM SERVER: " + message);
     }
 }
