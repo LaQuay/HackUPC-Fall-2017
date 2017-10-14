@@ -78,7 +78,9 @@ public class MainActivityFragment extends Fragment {
 
         buttonAroundMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                openImageChooser();
+                //openImageChooser();
+                Intent intent = new Intent(getActivity(), AroundMeActivity.class);
+                startActivity(intent);
             }
         });
 

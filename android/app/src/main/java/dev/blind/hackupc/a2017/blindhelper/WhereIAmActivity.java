@@ -37,8 +37,8 @@ public class WhereIAmActivity extends AppCompatActivity implements LocationContr
     }
 
     private void setUpElements() {
-        whereIAmLatLngTextView = (TextView) findViewById(R.id.where_i_am_lat_long);
-        whereIAmAddressTextView = (TextView) findViewById(R.id.where_i_am_text);
+        whereIAmLatLngTextView = (TextView) findViewById(R.id.where_i_am_lat_lng_text);
+        whereIAmAddressTextView = (TextView) findViewById(R.id.where_i_am_address_text);
     }
 
     public void makeRequestGoogle(String url) {

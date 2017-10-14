@@ -15,24 +15,7 @@ import dev.blind.hackupc.a2017.blindhelper.model.MyLocation;
 
 public class GeocodingController {
     private static final String TAG = GeocodingController.class.getSimpleName();
-    private static final String mapsKey = "AIzaSyBk_OGXM4QVt7YrlHCQl3VfQktfF2MHK38";
-    private static GeocodingController instance;
-
-    private GeocodingController() {
-    }
-
-    public static GeocodingController getInstance() {
-        if (instance == null) {
-            createInstance();
-        }
-        return instance;
-    }
-
-    private synchronized static void createInstance() {
-        if (instance == null) {
-            instance = new GeocodingController();
-        }
-    }
+    private static final String mapsKey = "AIzaSyCScWRCp0MaVnBvfz9MMMWz30nh0FmSRLw";
 
     public static String getGoogleApiByLatLng(Double lat, Double lng) {
         return "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true&key=" + mapsKey;
