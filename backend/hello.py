@@ -1,12 +1,19 @@
 from flask import Flask, jsonify, request
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-import json
+import os
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 app = Flask(__name__)
 
 app.config['MONGO_DBNAME'] = 'restdb'
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/restdb'
+app.config['UPLOAD_FOLDER'] = './uploads'
+app.config['TEMPLATE_FOLDER'] = '/templates'
 
 mongo = PyMongo(app)
 
@@ -66,14 +73,29 @@ def get_all_questions():
 
 @app.route('/question/<username>', methods=['POST'])
 def add_question(username):
+    print request.files
+
     usersDB = mongo.db.users
     user = usersDB.find_one({'username': username})
     if user:
-        questionsDB = mongo.db.questions
-        text = request.json['text']
-        question = questionsDB.insert({'text': text, 'user': username})
-        new_question = questionsDB.find_one({'_id': question })
-        output = {'_id': str(question), 'text' : new_question['text']}
+        if 'image' not in request.files:
+            output = 'No image part'
+        f = request.files['image']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if f.filename == '':
+            output = 'No selected image'
+        if f:
+            questionsDB = mongo.db.questions
+            text = request.files.get('text')
+            question = questionsDB.insert({'text': text, 'user': username})
+            new_question = questionsDB.find_one({'_id': question})
+            output = {'_id': str(question), 'text': new_question['text']}
+
+            filename = str(question) + ".png"
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            f.save(path)
+            output = 'image uploaded successfully'
     else:
         output = "No such user"
     return jsonify({'result' : output})
