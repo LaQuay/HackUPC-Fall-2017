@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -26,7 +25,6 @@ import dev.blind.hackupc.a2017.blindhelper.components.SpeechButton;
 import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.ImageController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.OCRController;
-import dev.blind.hackupc.a2017.blindhelper.controllers.TextToSpeechController;
 import dev.blind.hackupc.a2017.blindhelper.utils.ImageUtils;
 
 public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback, dev.blind.hackupc.a2017.blindhelper.controllers.OCRController.OCRResolvedCallback {
@@ -41,6 +39,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
     private SpeechButton buttonAroundMe;
     private SpeechButton buttonBeMyEyes;
     private SpeechButton buttonReadForMe;
+    private SpeechButton buttonLabelObject;
 
     private Uri outputFileUri;
     private String cameraDirectory;
@@ -72,6 +71,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
         buttonAroundMe = rootview.findViewById(R.id.main_fragment_around_me_button);
         buttonBeMyEyes = rootview.findViewById(R.id.main_fragment_be_my_eyes_button);
         buttonReadForMe = rootview.findViewById(R.id.main_fragment_read_for_me_button);
+        buttonLabelObject = rootview.findViewById(R.id.main_fragment_label_objects_button);
     }
 
     private void setUpListeners() {
@@ -98,6 +98,13 @@ public class MainActivityFragment extends Fragment implements BackendController.
         buttonReadForMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 makePhotoCamera(CAMERA_PHOTO_CODE_READ);
+            }
+        });
+
+        buttonLabelObject.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LabelObjectActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -133,7 +140,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
 
                     if (requestCode == CAMERA_PHOTO_CODE_EYES) {
                         uploadQuestionToAPI(outputFileUri.getPath());
-                    } else {
+                    } else if (requestCode == CAMERA_PHOTO_CODE_READ) {
                         uploadImageToAPI(outputFileUri.getPath());
                     }
                 } catch (Exception e) {

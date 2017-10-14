@@ -31,5 +31,6 @@
         <activity android:name=".WhereIAmActivity" />
         <activity android:name=".AroundMeActivity" />
         <activity android:name=".PhotoAnswerActivity" />
+        <activity android:name=".LabelObjectActivity" />
     </application>
 </manifest>
