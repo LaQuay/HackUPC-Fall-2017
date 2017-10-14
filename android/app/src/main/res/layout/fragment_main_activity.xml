@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical"
     android:padding="15dp">
 
@@ -19,69 +18,52 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/main_fragment_camera_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="#FA4519"
-                android:drawableTop="@drawable/common_full_open_on_phone"
-                android:paddingTop="30dp"
-                android:text="Foto"
-                android:textColor="#FFF"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/main_fragment_gallery_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#1D3B87"
-                android:drawableTop="@drawable/common_full_open_on_phone"
-                android:paddingTop="30dp"
-                android:text="Galería"
-                android:textColor="#FFF"
-                android:textSize="24sp" />
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/main_fragment_where_i_am_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="#FA4519"
+            android:drawableTop="@drawable/common_full_open_on_phone"
+            android:paddingTop="30dp"
+            android:text="Where I am?"
+            android:textColor="#FFF"
+            android:textSize="24sp" />
 
-            <Button
-                android:id="@+id/main_fragment_keyboard_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:background="#07C641"
-                android:drawableTop="@drawable/common_full_open_on_phone"
-                android:paddingTop="40dp"
-                android:text="Teclado"
-                android:textColor="#FFF"
-                android:textSize="24sp" />
+        <Button
+            android:id="@+id/main_fragment_around_me_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#1D3B87"
+            android:drawableTop="@drawable/common_full_open_on_phone"
+            android:paddingTop="30dp"
+            android:text="Around me"
+            android:textColor="#FFF"
+            android:textSize="24sp" />
 
-            <Button
-                android:id="@+id/main_fragment_microphone_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#BC0F6E"
-                android:drawableTop="@drawable/common_full_open_on_phone"
-                android:paddingTop="30dp"
-                android:text="Micrófono"
-                android:textColor="#FFF"
-                android:textSize="23sp" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/main_fragment_be_my_eyes_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#07C641"
+            android:drawableTop="@drawable/common_full_open_on_phone"
+            android:paddingTop="40dp"
+            android:text="Be my eyes"
+            android:textColor="#FFF"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/main_fragment_read_for_me_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#BC0F6E"
+            android:drawableTop="@drawable/common_full_open_on_phone"
+            android:paddingTop="30dp"
+            android:text="Read for me"
+            android:textColor="#FFF"
+            android:textSize="23sp" />
     </LinearLayout>
 </LinearLayout>

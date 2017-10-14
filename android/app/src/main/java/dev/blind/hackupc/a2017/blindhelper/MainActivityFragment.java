@@ -30,10 +30,10 @@ public class MainActivityFragment extends Fragment {
     private static final int GALLERY_PHOTO_CODE = 100;
     private static final int CAMERA_PHOTO_CODE = 101;
     private View rootview;
-    private Button buttonCamera;
-    private Button buttonGallery;
-    private Button buttonKeyboard;
-    private Button buttonMicrophone;
+    private Button buttonWhereIAm;
+    private Button buttonAroundMe;
+    private Button buttonBeMyEyes;
+    private Button buttonReadForMe;
 
     private Uri outputFileUri;
     private String cameraDirectory;
@@ -61,26 +61,28 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void setUpElements() {
-        buttonCamera = rootview.findViewById(R.id.main_fragment_camera_button);
-        buttonGallery = rootview.findViewById(R.id.main_fragment_gallery_button);
-        buttonKeyboard = rootview.findViewById(R.id.main_fragment_keyboard_button);
-        buttonMicrophone = rootview.findViewById(R.id.main_fragment_microphone_button);
+        buttonWhereIAm = rootview.findViewById(R.id.main_fragment_where_i_am_button);
+        buttonAroundMe = rootview.findViewById(R.id.main_fragment_around_me_button);
+        buttonBeMyEyes = rootview.findViewById(R.id.main_fragment_be_my_eyes_button);
+        buttonReadForMe = rootview.findViewById(R.id.main_fragment_read_for_me_button);
     }
 
     private void setUpListeners() {
-        buttonCamera.setOnClickListener(new View.OnClickListener() {
+        buttonWhereIAm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                makePhotoCamera();
+                //makePhotoCamera();
+                Intent intent = new Intent(getActivity(), WhereIAmActivity.class);
+                startActivity(intent);
             }
         });
 
-        buttonGallery.setOnClickListener(new View.OnClickListener() {
+        buttonAroundMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 openImageChooser();
             }
         });
 
-        buttonKeyboard.setOnClickListener(new View.OnClickListener() {
+        buttonBeMyEyes.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 /*Fragment fragment = KeyboardSearchFragment.newInstance();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -90,7 +92,7 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        buttonMicrophone.setOnClickListener(new View.OnClickListener() {
+        buttonReadForMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 /*Fragment fragment = AudioRecognisonFragment.newInstance();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
