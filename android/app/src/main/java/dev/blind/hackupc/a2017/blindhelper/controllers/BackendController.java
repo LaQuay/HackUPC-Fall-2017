@@ -32,49 +32,75 @@ import dev.blind.hackupc.a2017.blindhelper.utils.MultipartUtils;
     GET http://8239eda1.ngrok.io/answers/<questionId>
     POST http://8239eda1.ngrok.io/<username>/<questionId>
        body={text=<answer>} (edited)
+
+   IMAGES
+   GET http://8239eda1.ngrok.io/image/<imageId>
+   POST http://8239eda1.ngrok.io/image
+       body={image=<imagefile>}
  */
 
 public class BackendController {
     public static final String TAG = BackendController.class.getSimpleName();
-    private static final String BASE_URL = "http://6666df63.ngrok.io/";
+    private static final String BASE_URL = "http://4a3280a4.ngrok.io/";
     // Users
-    private static final String GET_USERS_URL = BASE_URL + "users/";
-    private static final String GET_USER_URL = BASE_URL + "user/";
-    private static final String ADD_USER_URL = BASE_URL + "user/";
+    public static final String GET_USERS_URL = BASE_URL + "users/";
+    public static final String GET_USER_URL = BASE_URL + "user/";
+    public static final String ADD_USER_URL = BASE_URL + "user/";
     // Questions
-    private static final String GET_QUESTIONS_URL = BASE_URL + "questions/";
-    private static final String GET_QUESTION_URL = BASE_URL + "question/";
-    private static final String ADD_QUESTION_URL = BASE_URL + "question/";
+    public static final String GET_QUESTIONS_URL = BASE_URL + "questions/";
+    public static final String GET_QUESTION_URL = BASE_URL + "question/";
+    public static final String ADD_QUESTION_URL = BASE_URL + "question/";
     // Answers
-    private static final String GET_ANSWER_URL = BASE_URL + "answers/";
-    private static final String ADD_ANSWER_URL = BASE_URL;
+    public static final String GET_ANSWER_URL = BASE_URL + "answers/";
+    public static final String ADD_ANSWER_URL = BASE_URL;
+    // Images
+    public static final String GET_IMAGE_URL = BASE_URL + "image/";
+    public static final String ADD_IMAGE_URL = BASE_URL + "image";
 
     public static void addQuestion(String userName, String questionToUpload, String imageURIToUpload, ResponseServerCallback responseServerCallback) {
         Log.e(TAG, "Sending to server -addQuestion-: " + userName + ", " + questionToUpload + ", " + imageURIToUpload);
         PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
-        photoToServerAsyncTask.execute(userName, questionToUpload, imageURIToUpload, responseServerCallback);
+        photoToServerAsyncTask.execute(ADD_QUESTION_URL, responseServerCallback, userName, questionToUpload, imageURIToUpload);
+    }
+
+    public static void addImage(String imageURIToUpload, ResponseServerCallback responseServerCallback) {
+        Log.e(TAG, "Sending to server -addImage-: " + imageURIToUpload);
+        PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
+        photoToServerAsyncTask.execute(ADD_IMAGE_URL, responseServerCallback, null, null, imageURIToUpload);
     }
 
     public interface ResponseServerCallback {
-        void onResponseServer(String message);
+        void onResponseServer(String petition, String message);
     }
 
     private static class PhotoToServerAsyncTask extends AsyncTask<Object, Void, String> {
         private ResponseServerCallback callback;
+        private String petitionTask;
 
         @Override
         protected String doInBackground(Object... params) {
             try {
-                String userName = params[0].toString();
-                String question = params[1].toString();
-                String uriName = params[2].toString();
-                callback = (ResponseServerCallback) params[3];
+                petitionTask = params[0].toString();
+                callback = (ResponseServerCallback) params[1];
+                switch (petitionTask) {
+                    case (ADD_QUESTION_URL):
+                        String userName = params[2].toString();
+                        String question = params[3].toString();
+                        String uriName = params[4].toString();
 
-                MultipartUtils multipart = new MultipartUtils(ADD_QUESTION_URL + userName, "UTF-8");
-                multipart.addFormField("text", question);
-                multipart.addFilePart("image", new File(uriName));
+                        MultipartUtils multipart = new MultipartUtils(ADD_QUESTION_URL + userName, "UTF-8");
+                        multipart.addFormField("text", question);
+                        multipart.addFilePart("image", new File(uriName));
 
-                return multipart.finish();
+                        return multipart.finish();
+                    case (ADD_IMAGE_URL):
+                        uriName = params[4].toString();
+
+                        multipart = new MultipartUtils(ADD_IMAGE_URL, "UTF-8");
+                        multipart.addFilePart("image", new File(uriName));
+
+                        return multipart.finish();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -86,7 +112,7 @@ public class BackendController {
             if (response != null && !response.isEmpty()) {
                 try {
                     JSONObject jsonObj = new JSONObject(response);
-                    callback.onResponseServer(jsonObj.getString("result"));
+                    callback.onResponseServer(petitionTask, jsonObj.getString("result"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
