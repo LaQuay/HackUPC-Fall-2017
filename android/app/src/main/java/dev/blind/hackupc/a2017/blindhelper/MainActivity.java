@@ -1,15 +1,14 @@
 package dev.blind.hackupc.a2017.blindhelper;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,12 +27,11 @@ import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
 import dev.blind.hackupc.a2017.blindhelper.model.MyLocation;
 
 public class MainActivity extends AppCompatActivity implements LocationController.OnNewLocationCallback {
-    private static final String TAG = MainActivity.class.getSimpleName();
     public static final int MULTIPLE_PERMISSIONS_CODE = 10;
     public static final int CAMERA_PERMISSION_CODE = 200;
     public static final int WRITE_SD_PERMISSION_CODE = 201;
     public static final int LOCATION_PERMISSION_CODE = 202;
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     private String[] permissions = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
@@ -49,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
                 LocationController.getInstance(this).startLocation(this);
             }
         }
+
+        Fragment newFragment = new MainActivityFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(android.R.id.content, newFragment).commit();
     }
 
     public void makeRequestGoogle(String url) {
