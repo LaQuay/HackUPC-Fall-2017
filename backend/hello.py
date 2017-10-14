@@ -28,22 +28,23 @@ def clear_db():
 def get_all_users():
     usersDB = mongo.db.users
     output = []
-    for s in usersDB.find():
-        output.append({'username' : s['username']})
+    for user in usersDB.find():
+        output.append({'username' : user['username']})
     return jsonify({'result' : output})
 
 @app.route('/user/<username>', methods=['GET'])
 def get_user(username):
-  usersDB = mongo.db.users
-  s = usersDB.find_one({'username' : username})
-  if s:
-    output = {'username' : s['username']}
-  else:
-    output = "No such username"
-  return jsonify({'result' : output})
+    usersDB = mongo.db.users
+    user = usersDB.find_one({'username' : username})
+    if user:
+        output = {'username' : user['username']}
+    else:
+        output = "No such username"
+    return jsonify({'result' : output})
 
 @app.route('/user', methods=['POST'])
 def add_user():
+    # TODO: check username does not exist
     usersDB = mongo.db.users
     username = request.json['username']
     user = usersDB.insert({'username': username})
@@ -59,19 +60,22 @@ def add_user():
 def get_all_questions():
     questionsDB = mongo.db.questions
     output = []
-    for s in questionsDB.find():
-        print s
-        output.append({'_id': str(s['_id']), 'text' : s['text'], 'user' : s['user']})
+    for question in questionsDB.find():
+        output.append({'_id': str(question['_id']), 'text' : question['text'], 'user' : question['user']})
     return jsonify({'result' : output})
 
 @app.route('/question/<username>', methods=['POST'])
 def add_question(username):
-    #TODO: check user exist
-    questionsDB = mongo.db.questions
-    text = request.json['text']
-    question = questionsDB.insert({'text': text, 'user': username})
-    new_question = questionsDB.find_one({'_id': question })
-    output = {'_id': str(question), 'text' : new_question['text']}
+    usersDB = mongo.db.users
+    user = usersDB.find_one({'username': username})
+    if user:
+        questionsDB = mongo.db.questions
+        text = request.json['text']
+        question = questionsDB.insert({'text': text, 'user': username})
+        new_question = questionsDB.find_one({'_id': question })
+        output = {'_id': str(question), 'text' : new_question['text']}
+    else:
+        output = "No such user"
     return jsonify({'result' : output})
 
 ########################################################################################################################
@@ -81,12 +85,12 @@ def add_question(username):
 @app.route('/answers/<questionid>', methods=['GET'])
 def get_all_answers(questionid):
     questionsDB = mongo.db.questions
-    s1 = questionsDB.find_one({'_id': ObjectId(questionid)})
-    if s1:
+    question = questionsDB.find_one({'_id': ObjectId(questionid)})
+    if question:
         answersDB = mongo.db.answers
-        output = {"question": s1['text'], "answers": []}
-        for s2 in answersDB.find({'questionId': questionid}):
-            output['answers'].append({'user': s2['user'], 'text': s2['text']})
+        output = {"question": question['text'], "answers": []}
+        for answer in answersDB.find({'questionId': questionid}):
+            output['answers'].append({'user': answer['user'], 'text': answer['text']})
     else:
         output = "No such question"
 
@@ -94,12 +98,22 @@ def get_all_answers(questionid):
 
 @app.route('/answer/<username>/<questionid>', methods=['POST'])
 def add_answer(username, questionid):
-    #TODO: check user and question exist
-    answersDB = mongo.db.answers
-    text = request.json['text']
-    answer = answersDB.insert({'text': text, 'user': username, 'questionId': questionid})
-    new_answer = answersDB.find_one({'_id': answer })
-    output = {'text' : new_answer['text']}
+    usersDB = mongo.db.users
+    user = usersDB.find_one({'username': username})
+    if user:
+        questionsDB = mongo.db.questions
+        question = questionsDB.find_one({'_id': ObjectId(questionid)})
+        if question:
+            answersDB = mongo.db.answers
+            text = request.json['text']
+            answer = answersDB.insert({'text': text, 'user': username, 'questionId': questionid})
+            new_answer = answersDB.find_one({'_id': answer})
+            output = {'text': new_answer['text']}
+            return jsonify({'result': output})
+        else:
+            output = "No such question"
+    else:
+        output = "No such user"
     return jsonify({'result' : output})
 
 ########################################################################################################################
