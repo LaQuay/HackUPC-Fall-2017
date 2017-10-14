@@ -1,6 +1,7 @@
 package dev.blind.hackupc.a2017.blindhelper;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +23,16 @@ import java.io.IOException;
 
 import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.ImageController;
-import dev.blind.hackupc.a2017.blindhelper.controllers.TessOCRController;
+import dev.blind.hackupc.a2017.blindhelper.controllers.OCRController;
 import dev.blind.hackupc.a2017.blindhelper.utils.ImageUtils;
 
-public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback {
+public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback, dev.blind.hackupc.a2017.blindhelper.controllers.OCRController.OCRResolvedCallback {
     public static final String TAG = MainActivityFragment.class.getSimpleName();
     private static final int CAMERA_PHOTO_CODE_EYES = 100;
     private static final int CAMERA_PHOTO_CODE_READ = 101;
-    private static int PHOTO_SCALED_WIDTH = 854;
-    private static int PHOTO_SCALED_HEIGHT = 480;
+    private static final int PHOTO_SCALED_WIDTH = 854;
+    private static final int PHOTO_SCALED_HEIGHT = 480;
+    private static final String OCR_LANGUAGE = "eng"; // En ISO 639-2/B
     private View rootview;
     private Button buttonWhereIAm;
     private Button buttonAroundMe;
@@ -39,7 +42,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
     private Uri outputFileUri;
     private String cameraDirectory;
     private ImageController imageController;
-    private TessOCRController tessOCRController;
+    private OCRController OCRController;
 
     public static MainActivityFragment newInstance() {
         return new MainActivityFragment();
@@ -56,7 +59,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
         setUpFolderPhotos();
 
         imageController = new ImageController(getContext());
-        tessOCRController = new TessOCRController(getContext(), "spa"); // En ISO 639-2/B
+        OCRController = new OCRController(getContext(), OCR_LANGUAGE);
 
         return rootview;
     }
@@ -71,7 +74,6 @@ public class MainActivityFragment extends Fragment implements BackendController.
     private void setUpListeners() {
         buttonWhereIAm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //makePhotoCamera();
                 Intent intent = new Intent(getActivity(), WhereIAmActivity.class);
                 startActivity(intent);
             }
@@ -79,7 +81,6 @@ public class MainActivityFragment extends Fragment implements BackendController.
 
         buttonAroundMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //openImageChooser();
                 Intent intent = new Intent(getActivity(), AroundMeActivity.class);
                 startActivity(intent);
             }
@@ -87,33 +88,24 @@ public class MainActivityFragment extends Fragment implements BackendController.
 
         buttonBeMyEyes.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                /*Fragment fragment = KeyboardSearchFragment.newInstance();
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.main_container, fragment, KeyboardSearchFragment.TAG);
-                ft.addToBackStack(null);
-                ft.commit();*/
-                makePhotoCamera();
+                makePhotoCamera(CAMERA_PHOTO_CODE_EYES);
             }
         });
 
         buttonReadForMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                /*Fragment fragment = AudioRecognisonFragment.newInstance();
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.main_container, fragment, AudioRecognisonFragment.TAG);
-                ft.addToBackStack(null);
-                ft.commit();*/
+                makePhotoCamera(CAMERA_PHOTO_CODE_READ);
             }
         });
     }
 
-    public void makePhotoCamera() {
+    public void makePhotoCamera(int intentForResult) {
         outputFileUri = imageController.getUriCameraPhoto(cameraDirectory);
         if (outputFileUri != null) {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
-            startActivityForResult(cameraIntent, CAMERA_PHOTO_CODE_EYES);
+            startActivityForResult(cameraIntent, intentForResult);
         }
     }
 
@@ -137,10 +129,9 @@ public class MainActivityFragment extends Fragment implements BackendController.
                     ImageUtils.compressBitmap(new File(outputFileUri.getPath()), scaledBitmap);
 
                     if (requestCode == CAMERA_PHOTO_CODE_EYES) {
-                        uploadImageToAPI(outputFileUri.getPath());
+                        uploadQuestionToAPI(outputFileUri.getPath());
                     } else {
-                        Log.e(TAG, "OCR Result");
-                        String ocrResult = tessOCRController.getOCRResult(selectedImage);
+                        OCRController.imageOCRRequest("http://6666df63.ngrok.io/question/59e22b9fb55e9f388c124f48", this);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -152,10 +143,36 @@ public class MainActivityFragment extends Fragment implements BackendController.
         }
     }
 
-    public void uploadImageToAPI(String uriToUpload) {
+    public void uploadQuestionToAPI(String uriToUpload) {
         Toast.makeText(getActivity(), "Uploading photo", Toast.LENGTH_SHORT).show();
 
         BackendController.addQuestion("usuario123", "Pregunta de prueba", uriToUpload, this);
+    }
+
+    private void createModal(String value) {
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("Results")
+                .setMessage(value)
+                .setPositiveButton("Accept", null)
+                .setNegativeButton("Repeat", null)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e(TAG, "Aquí debería volver a sonar lo que hay dentro");
+                    }
+                });
+            }
+        });
+
+        dialog.show();
+
+        Log.e(TAG, "Aquí debería sonar lo que hay en value");
     }
 
     private Bitmap readImageFromResources(Uri uriToRead) throws IOException {
@@ -165,5 +182,13 @@ public class MainActivityFragment extends Fragment implements BackendController.
     @Override
     public void onResponseServer(String message) {
         Log.e(TAG, "RESPONSE FROM SERVER: " + message);
+        // La idea podria ser aquí esperar en un bucle a que el servidor tuviera algun valor escrito
+        // y entonces hacer el createModal con ese valor
+    }
+
+    @Override
+    public void onImageOCRResolved(String message) {
+        Log.e(TAG, "RESPONSE FROM OCR: " + message);
+        createModal(message);
     }
 }
