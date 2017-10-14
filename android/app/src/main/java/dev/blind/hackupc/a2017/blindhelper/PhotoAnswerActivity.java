@@ -42,7 +42,7 @@ import dev.blind.hackupc.a2017.blindhelper.model.Question;
 
 import static java.security.AccessController.getContext;
 
-public class PhotoAnswerActivity extends AppCompatActivity {
+public class PhotoAnswerActivity extends AppCompatActivity implements BackendController.ResponseServerCallback {
     private static final String TAG = PhotoAnswerActivity.class.getSimpleName();
     private List<Question> mData;
     private RecyclerView mRecyclerView;
@@ -88,5 +88,14 @@ public class PhotoAnswerActivity extends AppCompatActivity {
             }
         });
         VolleyController.getInstance(this).addToQueue(request);
+    }
+
+    public void addAnswer(String username, String id, String text) {
+        BackendController.addAnswer(username, id, text, this);
+    }
+
+    @Override
+    public void onResponseServer(String petition, String message) {
+
     }
 }

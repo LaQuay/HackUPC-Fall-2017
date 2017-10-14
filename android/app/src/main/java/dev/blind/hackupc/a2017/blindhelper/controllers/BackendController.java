@@ -2,6 +2,7 @@ package dev.blind.hackupc.a2017.blindhelper.controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +74,12 @@ public class BackendController {
         photoToServerAsyncTask.execute(ADD_IMAGE_URL, responseServerCallback, null, null, imageURIToUpload);
     }
 
+    public static void addAnswer(String username, String questionid, String answer, ResponseServerCallback responseServerCallback) {
+        Log.e(TAG, "Sending to server -addImage-: " + username + ", " + questionid + ", " + answer);
+        PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
+        photoToServerAsyncTask.execute(ADD_ANSWER_URL, responseServerCallback, username, questionid, answer);
+    }
+
     public static ArrayList<Question> getQuestionsJSON(JSONObject jsonObject) {
         try {
             JSONArray results = jsonObject.getJSONArray("result");
@@ -123,6 +130,15 @@ public class BackendController {
 
                         multipart = new MultipartUtils(ADD_IMAGE_URL, "UTF-8");
                         multipart.addFilePart("image", new File(uriName));
+
+                        return multipart.finish();
+                    case (ADD_ANSWER_URL):
+                        String username = params[2].toString();
+                        String questionid = params[3].toString();
+                        String answer = params[4].toString();
+
+                        multipart = new MultipartUtils(ADD_ANSWER_URL + username + "/" + questionid, "UTF-8");
+                        multipart.addFormField("text", answer);
 
                         return multipart.finish();
                 }
