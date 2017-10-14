@@ -46,9 +46,8 @@ public class MainActivityFragmentHelper extends Fragment {
     private void setUpListeners() {
         buttonPhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //makePhotoCamera();
-                //Intent intent = new Intent(getActivity(), WhereIAmActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getActivity(), PhotoAnswerActivity.class);
+                startActivity(intent);
             }
         });
 
