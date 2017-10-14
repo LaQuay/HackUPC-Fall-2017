@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION};
 
+    private boolean isBlindMode = true;
+    private MenuItem modeItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +41,42 @@ public class MainActivity extends AppCompatActivity {
         Fragment newFragment = new MainActivityFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(android.R.id.content, newFragment).commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.app_bar_menu, menu);
+        modeItem = menu.findItem(R.id.app_mode);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment = null;
+        String fragmentTAG = null;
+
+        switch (item.getItemId()) {
+            case R.id.app_mode:
+                isBlindMode = !isBlindMode;
+                if (isBlindMode) {
+                    modeItem.setTitle("BLIND MODE");
+                    fragment = MainActivityFragment.newInstance();
+                    fragmentTAG = MainActivityFragment.TAG;
+                }
+                else {
+                    modeItem.setTitle("HELPER MODE");
+                    fragment = MainActivityFragmentHelper.newInstance();
+                    fragmentTAG = MainActivityFragmentHelper.TAG;
+                }
+        }
+
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(android.R.id.content, fragment, fragmentTAG);
+            ft.commit();
+        }
+
+        return true;
     }
 
     public boolean requestPermissions() {
