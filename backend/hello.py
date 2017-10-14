@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, redirect, url_for, send_from_directory
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 import os
@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 app.config['MONGO_DBNAME'] = 'restdb'
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/restdb'
+app.config['OCR_UPLOAD_FOLDER'] = './ocruploads'
 app.config['UPLOAD_FOLDER'] = './uploads'
 app.config['TEMPLATE_FOLDER'] = '/templates'
 
@@ -149,6 +150,45 @@ def add_answer(username, questionid):
     else:
         output = "No such user"
     return jsonify({'result' : output})
+
+########################################################################################################################
+
+@app.route('/image', methods=['POST'])
+def add_image():
+    if 'image' not in request.files:
+        output = 'No image part'
+    f = request.files['image']
+    # if user does not select file, browser also
+    # submit a empty part without filename
+    if f.filename == '':
+        output = 'No selected image'
+    if f:
+        imagesDB = mongo.db.images
+        image = imagesDB.find_one(sort=[("id", -1)])
+        if image:
+            filenum = str(int(image['id']) + 1)
+        else:
+            filenum = "1"
+        filename = filenum + ".png"
+        imagesDB.insert({'id': filenum})
+
+        path = os.path.join(app.config['OCR_UPLOAD_FOLDER'], filename)
+        f.save(path)
+
+        output = filenum
+
+    return jsonify({'result' : output})
+
+@app.route('/image/<imageid>', methods=['GET'])
+def get_image_url(imageid):
+    filenum = imageid
+    filename = filenum + ".png"
+
+    path = os.path.join(app.config['OCR_UPLOAD_FOLDER'], filename)
+    #f.save(path)
+
+    uploads = os.path.join(app.root_path, app.config['OCR_UPLOAD_FOLDER'])
+    return send_from_directory(directory=uploads, filename=filename)
 
 ########################################################################################################################
 
