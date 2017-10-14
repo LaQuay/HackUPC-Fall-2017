@@ -131,7 +131,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
                     if (requestCode == CAMERA_PHOTO_CODE_EYES) {
                         uploadQuestionToAPI(outputFileUri.getPath());
                     } else {
-                        OCRController.imageOCRRequest("http://6666df63.ngrok.io/question/59e22b9fb55e9f388c124f48", this);
+                        uploadImageToAPI(outputFileUri.getPath());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -146,7 +146,13 @@ public class MainActivityFragment extends Fragment implements BackendController.
     public void uploadQuestionToAPI(String uriToUpload) {
         Toast.makeText(getActivity(), "Uploading photo", Toast.LENGTH_SHORT).show();
 
-        BackendController.addQuestion("usuario123", "Pregunta de prueba", uriToUpload, this);
+        BackendController.addQuestion("usuario123", "Pregunta de prueba2", uriToUpload, this);
+    }
+
+    public void uploadImageToAPI(String uriToUpload) {
+        Toast.makeText(getActivity(), "Uploading photo", Toast.LENGTH_SHORT).show();
+
+        BackendController.addImage(uriToUpload, this);
     }
 
     private void createModal(String value) {
@@ -180,10 +186,16 @@ public class MainActivityFragment extends Fragment implements BackendController.
     }
 
     @Override
-    public void onResponseServer(String message) {
+    public void onResponseServer(String petition, String message) {
         Log.e(TAG, "RESPONSE FROM SERVER: " + message);
         // La idea podria ser aquí esperar en un bucle a que el servidor tuviera algun valor escrito
         // y entonces hacer el createModal con ese valor
+
+        if (petition.equals(BackendController.ADD_QUESTION_URL)) {
+
+        } else if (petition.equals(BackendController.ADD_IMAGE_URL)) {
+            OCRController.imageOCRRequest(BackendController.GET_IMAGE_URL + message, this);
+        }
     }
 
     @Override
