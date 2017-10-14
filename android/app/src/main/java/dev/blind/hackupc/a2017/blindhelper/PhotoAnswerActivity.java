@@ -65,6 +65,9 @@ public class PhotoAnswerActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new PhotoQuestionAdapter(this, mData));
 
+        //LinearLayoutManager horizontalLayoutManagaer = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        //mRecyclerView.setLayoutManager(horizontalLayoutManagaer);
+
         mContext = this;
     }
 
