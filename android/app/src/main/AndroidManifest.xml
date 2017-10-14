@@ -30,5 +30,6 @@
 
         <activity android:name=".WhereIAmActivity" />
         <activity android:name=".AroundMeActivity" />
+        <activity android:name=".PhotoAnswerActivity" />
     </application>
 </manifest>
