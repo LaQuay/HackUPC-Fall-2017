@@ -12,6 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView;
 import dev.blind.hackupc.a2017.blindhelper.controllers.GeocodingController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.LocationController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
@@ -23,8 +24,8 @@ import dev.blind.hackupc.a2017.blindhelper.model.MyLocation;
 
 public class WhereIAmActivity extends AppCompatActivity implements LocationController.OnNewLocationCallback {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private TextView whereIAmLatLngTextView;
-    private TextView whereIAmAddressTextView;
+    private SpeechTextView whereIAmLatLngTextView;
+    private SpeechTextView whereIAmAddressTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +38,8 @@ public class WhereIAmActivity extends AppCompatActivity implements LocationContr
     }
 
     private void setUpElements() {
-        whereIAmLatLngTextView = (TextView) findViewById(R.id.where_i_am_lat_lng_text);
-        whereIAmAddressTextView = (TextView) findViewById(R.id.where_i_am_address_text);
+        whereIAmLatLngTextView = (SpeechTextView) findViewById(R.id.where_i_am_lat_lng_text);
+        whereIAmAddressTextView = (SpeechTextView) findViewById(R.id.where_i_am_address_text);
     }
 
     public void makeRequestGoogle(String url) {

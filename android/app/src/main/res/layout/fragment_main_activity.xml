@@ -11,7 +11,7 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
-        <Button
+        <dev.blind.hackupc.a2017.blindhelper.components.SpeechButton
             android:id="@+id/main_fragment_where_i_am_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -23,7 +23,7 @@
             android:textColor="#FFF"
             android:textSize="24sp" />
 
-        <Button
+        <dev.blind.hackupc.a2017.blindhelper.components.SpeechButton
             android:id="@+id/main_fragment_around_me_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -35,7 +35,7 @@
             android:textColor="#FFF"
             android:textSize="24sp" />
 
-        <Button
+        <dev.blind.hackupc.a2017.blindhelper.components.SpeechButton
             android:id="@+id/main_fragment_be_my_eyes_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -47,7 +47,7 @@
             android:textColor="#FFF"
             android:textSize="24sp" />
 
-        <Button
+        <dev.blind.hackupc.a2017.blindhelper.components.SpeechButton
             android:id="@+id/main_fragment_read_for_me_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
