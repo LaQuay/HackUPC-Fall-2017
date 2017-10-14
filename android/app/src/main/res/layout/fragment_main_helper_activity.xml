@@ -10,28 +10,47 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4"/>
         <Button
             android:id="@+id/main_fragment_helper_photo"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#FA4519"
-            android:drawableTop="@drawable/common_full_open_on_phone"
-            android:paddingTop="30dp"
+            android:background="@drawable/button_drawable"
+            android:drawableLeft="@drawable/common_full_open_on_phone"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="Photo Answer"
-            android:textColor="#FFF"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/main_fragment_helper_video"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#1D3B87"
-            android:drawableTop="@drawable/common_full_open_on_phone"
-            android:paddingTop="30dp"
+            android:background="@drawable/button_drawable"
+            android:drawableLeft="@drawable/common_full_open_on_phone"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="Video Answer"
-            android:textColor="#FFF"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4"/>
     </LinearLayout>
 </LinearLayout>

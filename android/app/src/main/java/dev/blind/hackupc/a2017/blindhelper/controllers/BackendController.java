@@ -2,13 +2,18 @@ package dev.blind.hackupc.a2017.blindhelper.controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import dev.blind.hackupc.a2017.blindhelper.model.MyPlaces;
+import dev.blind.hackupc.a2017.blindhelper.model.Question;
 import dev.blind.hackupc.a2017.blindhelper.utils.MultipartUtils;
 
 /**
@@ -43,11 +48,11 @@ public class BackendController {
     public static final String TAG = BackendController.class.getSimpleName();
     private static final String BASE_URL = "http://4a3280a4.ngrok.io/";
     // Users
-    public static final String GET_USERS_URL = BASE_URL + "users/";
+    public static final String GET_USERS_URL = BASE_URL + "users";
     public static final String GET_USER_URL = BASE_URL + "user/";
-    public static final String ADD_USER_URL = BASE_URL + "user/";
+    public static final String ADD_USER_URL = BASE_URL + "user";
     // Questions
-    public static final String GET_QUESTIONS_URL = BASE_URL + "questions/";
+    public static final String GET_QUESTIONS_URL = BASE_URL + "questions";
     public static final String GET_QUESTION_URL = BASE_URL + "question/";
     public static final String ADD_QUESTION_URL = BASE_URL + "question/";
     // Answers
@@ -56,8 +61,6 @@ public class BackendController {
     // Images
     public static final String GET_IMAGE_URL = BASE_URL + "image/";
     public static final String ADD_IMAGE_URL = BASE_URL + "image";
-
-    public static final String IMAGE_URL = BASE_URL + "image";
 
     public static void addQuestion(String userName, String questionToUpload, String imageURIToUpload, ResponseServerCallback responseServerCallback) {
         Log.e(TAG, "Sending to server -addQuestion-: " + userName + ", " + questionToUpload + ", " + imageURIToUpload);
@@ -69,6 +72,33 @@ public class BackendController {
         Log.e(TAG, "Sending to server -addImage-: " + imageURIToUpload);
         PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
         photoToServerAsyncTask.execute(ADD_IMAGE_URL, responseServerCallback, null, null, imageURIToUpload);
+    }
+
+    public static void addAnswer(String username, String questionid, String answer, ResponseServerCallback responseServerCallback) {
+        Log.e(TAG, "Sending to server -addImage-: " + username + ", " + questionid + ", " + answer);
+        PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
+        photoToServerAsyncTask.execute(ADD_ANSWER_URL, responseServerCallback, username, questionid, answer);
+    }
+
+    public static ArrayList<Question> getQuestionsJSON(JSONObject jsonObject) {
+        try {
+            JSONArray results = jsonObject.getJSONArray("result");
+            ArrayList<Question> questions = new ArrayList<>();
+            for (int i = 0; i < results.length(); ++i) {
+                Question question = new Question();
+                JSONObject questionJSONObject = results.getJSONObject(i);
+                Log.e("TT", questionJSONObject.toString());
+
+                question.setQuestionText(questionJSONObject.getString("text"));
+                question.setId(questionJSONObject.getString("_id"));
+
+                questions.add(question);
+            }
+            return questions;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public interface ResponseServerCallback {
@@ -100,6 +130,15 @@ public class BackendController {
 
                         multipart = new MultipartUtils(ADD_IMAGE_URL, "UTF-8");
                         multipart.addFilePart("image", new File(uriName));
+
+                        return multipart.finish();
+                    case (ADD_ANSWER_URL):
+                        String username = params[2].toString();
+                        String questionid = params[3].toString();
+                        String answer = params[4].toString();
+
+                        multipart = new MultipartUtils(ADD_ANSWER_URL + username + "/" + questionid, "UTF-8");
+                        multipart.addFormField("text", answer);
 
                         return multipart.finish();
                 }

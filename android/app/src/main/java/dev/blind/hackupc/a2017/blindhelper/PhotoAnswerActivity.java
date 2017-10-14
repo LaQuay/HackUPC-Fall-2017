@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.blind.hackupc.a2017.blindhelper.adapters.PhotoQuestionAdapter;
+import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.GooglePlacesController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.LocationController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
@@ -41,9 +42,11 @@ import dev.blind.hackupc.a2017.blindhelper.model.Question;
 
 import static java.security.AccessController.getContext;
 
-public class PhotoAnswerActivity extends AppCompatActivity {
+public class PhotoAnswerActivity extends AppCompatActivity implements BackendController.ResponseServerCallback {
     private static final String TAG = PhotoAnswerActivity.class.getSimpleName();
     private List<Question> mData;
+    private RecyclerView mRecyclerView;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +58,44 @@ public class PhotoAnswerActivity extends AppCompatActivity {
 
     private void setUpElements() {
         mData = new ArrayList<>();
-        mData.add(new Question("Cuando caduca", "1"));
+        makeRequestQuestions();
+        //mData.add(new Question("Cuando caduca", "1"));
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.photo_answer_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.photo_answer_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new PhotoQuestionAdapter(this, mData));
+
+        //LinearLayoutManager horizontalLayoutManagaer = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        //mRecyclerView.setLayoutManager(horizontalLayoutManagaer);
+
+        mContext = this;
+    }
+
+    public void makeRequestQuestions() {
+        Log.e("TT", BackendController.GET_QUESTIONS_URL);
+        JsonObjectRequest request = new JsonObjectRequest(BackendController.GET_QUESTIONS_URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                ArrayList<Question> questions = BackendController.getQuestionsJSON(jsonObject);
+
+                mData = questions;
+                mRecyclerView.setAdapter(new PhotoQuestionAdapter(mContext, mData));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                VolleyController.getInstance(getApplicationContext()).onConnectionFailed(volleyError.toString());
+            }
+        });
+        VolleyController.getInstance(this).addToQueue(request);
+    }
+
+    public void addAnswer(String username, String id, String text) {
+        BackendController.addAnswer(username, id, text, this);
+    }
+
+    @Override
+    public void onResponseServer(String petition, String message) {
+
     }
 }

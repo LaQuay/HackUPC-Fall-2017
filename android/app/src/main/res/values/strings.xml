@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blind Helper</string>
+    <string name="app_name">Lazarus</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
         AIzaSyCScWRCp0MaVnBvfz9MMMWz30nh0FmSRLw

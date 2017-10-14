@@ -179,7 +179,7 @@ public class LabelObjectActivity extends AppCompatActivity implements BackendCon
 
     @Override
     public void onResponseServer(String petition, String message) {
-        String url = BackendController.IMAGE_URL + "/" + message;
+        String url = BackendController.GET_IMAGE_URL + message;
         Log.e(TAG, "URL to VisualRecognition: " + url);
         setVisualRecognitionData(url);
     }

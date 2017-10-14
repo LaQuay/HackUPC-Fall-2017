@@ -6,10 +6,6 @@ public class Question {
     private String questionText;
     private String id;
 
-    public Question(String text, String id) {
-        this.questionText = text;
-    }
-
     public String getQuestionText() {
         return questionText;
     }
