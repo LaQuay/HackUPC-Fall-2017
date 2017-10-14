@@ -13,10 +13,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.blind.hackupc.a2017.blindhelper.controllers.GeocodingController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.LocationController;
+import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
+import dev.blind.hackupc.a2017.blindhelper.model.MyLocation;
 
 public class MainActivity extends AppCompatActivity implements LocationController.OnNewLocationCallback {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -40,6 +49,24 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
                 LocationController.getInstance(this).startLocation(this);
             }
         }
+    }
+
+    public void makeRequestGoogle(String url) {
+        Log.e(TAG, url);
+
+        JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                MyLocation currentMyLocation = GeocodingController.getLocationFromGoogleJSON(jsonObject);
+                Log.e(TAG, currentMyLocation.getAddress());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                VolleyController.getInstance(getApplicationContext()).onConnectionFailed(volleyError.toString());
+            }
+        });
+        VolleyController.getInstance(this).addToQueue(request);
     }
 
     public boolean requestPermissions() {
@@ -97,5 +124,8 @@ public class MainActivity extends AppCompatActivity implements LocationControlle
     public void onNewLocation(Location location) {
         Log.e(TAG, "Location: " + location.getLatitude() + ", " + location.getLongitude());
         LocationController.getInstance(this).stopLocation();
+
+        makeRequestGoogle(
+                GeocodingController.getGoogleApiByLatLng(location.getLatitude(), location.getLongitude()));
     }
 }
