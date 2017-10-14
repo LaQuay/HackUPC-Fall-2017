@@ -55,7 +55,7 @@ public class PhotoAnswerActivity extends AppCompatActivity {
 
     private void setUpElements() {
         mData = new ArrayList<>();
-        mData.add(new Question("Cuando caduca"));
+        mData.add(new Question("Cuando caduca", "1"));
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.photo_answer_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

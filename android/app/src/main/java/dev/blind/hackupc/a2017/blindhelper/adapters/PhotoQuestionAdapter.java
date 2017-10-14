@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import dev.blind.hackupc.a2017.blindhelper.R;
+import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.model.Question;
 
 public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdapter.CustomViewHolder> {
@@ -37,18 +38,9 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
         Question question = questionsList.get(i);
 
-        /*
-        //Render image using Picasso library
-        if (!TextUtils.isEmpty(question.getQuestionText())) {
-            Picasso.with(mContext).load(question.getThumbnail())
-                    .error(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
-                    .into(customViewHolder.imageView);
-        }
-        */
-
         //Setting text view title
         customViewHolder.textView.setText(question.getQuestionText());
+        Picasso.with(mContext).load(BackendController.IMAGE_URL + "/" + question.getId()).into(customViewHolder.imageView);
     }
 
     @Override

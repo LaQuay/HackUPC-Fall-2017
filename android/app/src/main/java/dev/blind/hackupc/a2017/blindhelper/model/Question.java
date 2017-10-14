@@ -1,9 +1,12 @@
 package dev.blind.hackupc.a2017.blindhelper.model;
 
+import android.widget.ImageView;
+
 public class Question {
     private String questionText;
+    private String id;
 
-    public Question(String text) {
+    public Question(String text, String id) {
         this.questionText = text;
     }
 
@@ -13,5 +16,13 @@ public class Question {
 
     public void setQuestionText(String questionText) {
         this.questionText = questionText;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
