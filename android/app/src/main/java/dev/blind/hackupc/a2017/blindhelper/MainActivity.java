@@ -52,17 +52,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment = null;
+        String fragmentTAG = null;
+
         switch (item.getItemId()) {
             case R.id.app_mode:
                 isBlindMode = !isBlindMode;
-                if (isBlindMode) modeItem.setTitle("BLIND MODE");
-                else modeItem.setTitle("HELPER MODE");
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-
+                if (isBlindMode) {
+                    modeItem.setTitle("BLIND MODE");
+                    fragment = MainActivityFragment.newInstance();
+                    fragmentTAG = MainActivityFragment.TAG;
+                }
+                else {
+                    modeItem.setTitle("HELPER MODE");
+                    fragment = MainActivityFragmentHelper.newInstance();
+                    fragmentTAG = MainActivityFragmentHelper.TAG;
+                }
         }
+
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(android.R.id.content, fragment, fragmentTAG);
+            ft.commit();
+        }
+
+        return true;
     }
 
     public boolean requestPermissions() {

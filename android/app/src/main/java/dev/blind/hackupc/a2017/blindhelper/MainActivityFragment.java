@@ -25,7 +25,7 @@ import dev.blind.hackupc.a2017.blindhelper.controllers.TessOCRController;
 import dev.blind.hackupc.a2017.blindhelper.utils.ImageUtils;
 
 public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback {
-    private static final String TAG = MainActivityFragment.class.getSimpleName();
+    public static final String TAG = MainActivityFragment.class.getSimpleName();
     private static final int CAMERA_PHOTO_CODE_EYES = 100;
     private static final int CAMERA_PHOTO_CODE_READ = 101;
     private static int PHOTO_SCALED_WIDTH = 854;
