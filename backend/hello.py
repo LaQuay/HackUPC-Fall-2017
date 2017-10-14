@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 import os
@@ -87,7 +87,7 @@ def add_question(username):
             output = 'No selected image'
         if f:
             questionsDB = mongo.db.questions
-            text = request.files.get('text')
+            text = request.form['text']
             question = questionsDB.insert({'text': text, 'user': username})
             new_question = questionsDB.find_one({'_id': question})
             output = {'_id': str(question), 'text': new_question['text']}
@@ -99,6 +99,18 @@ def add_question(username):
     else:
         output = "No such user"
     return jsonify({'result' : output})
+
+@app.route('/question/<questionid>', methods=['GET'])
+def get_question(questionid):
+    questionsDB = mongo.db.questions
+    question = questionsDB.find_one({'_id': ObjectId(questionid)})
+    if question:
+        filename = questionid + ".png"
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        return send_file(path, mimetype='image/png')
+    else:
+        output = "No such question"
+    return jsonify({'result': output})
 
 ########################################################################################################################
 ## ANSWERS
