@@ -24,26 +24,31 @@
             android:id="@+id/detected_objects_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Loading..." />
+            android:text="Loading..."
+            android:textSize="18sp" />
 
         <dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView
             android:id="@+id/detected_objects_2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
 
         <dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView
             android:id="@+id/detected_objects_3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
 
         <dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView
             android:id="@+id/detected_objects_4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
 
         <dev.blind.hackupc.a2017.blindhelper.components.SpeechTextView
             android:id="@+id/detected_objects_5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>
