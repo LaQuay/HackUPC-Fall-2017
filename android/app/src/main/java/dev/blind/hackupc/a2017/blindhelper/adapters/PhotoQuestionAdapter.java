@@ -1,13 +1,10 @@
 package dev.blind.hackupc.a2017.blindhelper.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,11 +18,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+
 import java.util.List;
 
 import dev.blind.hackupc.a2017.blindhelper.PhotoAnswerActivity;
 import dev.blind.hackupc.a2017.blindhelper.R;
-import dev.blind.hackupc.a2017.blindhelper.WhereIAmActivity;
 import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.model.Question;
 
@@ -93,9 +91,14 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
     }
 
     @Override
-    public void onResponseServer(String petition, String message) {
+    public void onResponseServer(String petition, String id, String text) {
         if (petition.equals(BackendController.ADD_ANSWER_URL)) {
         }
+    }
+
+    @Override
+    public void onResponseGetAnswer(JSONArray jsonArray) {
+
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -107,11 +110,11 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
 
         public CustomViewHolder(View view) {
             super(view);
-            this.imageView = (ImageView) view.findViewById(R.id.question_image);
-            this.textView = (TextView) view.findViewById(R.id.question_text);
-            this.editView = (EditText) view.findViewById(R.id.question_answer_text);
-            this.button = (Button) view.findViewById(R.id.question_answer_send_button);
-            this.linearLayout = (LinearLayout) view.findViewById(R.id.question_answers_layout);
+            this.imageView = view.findViewById(R.id.question_image);
+            this.textView = view.findViewById(R.id.question_text);
+            this.editView = view.findViewById(R.id.question_answer_text);
+            this.button = view.findViewById(R.id.question_answer_send_button);
+            this.linearLayout = view.findViewById(R.id.question_answers_layout);
         }
     }
 }
