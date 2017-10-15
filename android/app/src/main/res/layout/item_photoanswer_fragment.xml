@@ -1,82 +1,94 @@
-<android.support.v7.widget.CardView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    cardview:cardCornerRadius="2dp"
-    cardview:cardElevation="3dp"
-    cardview:cardUseCompatPadding="true">
+    android:padding="10dp">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:cardview="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/question_image"
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_alignParentTop="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/common_full_open_on_phone"/>
+        cardview:cardCornerRadius="2dp"
+        cardview:cardElevation="3dp"
+        android:gravity="center_vertical"
+        cardview:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginEnd="30dp"
-            android:padding="10dp">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/question_text"
+            <ImageView
+                android:id="@+id/question_image"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_alignParentTop="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/common_full_open_on_phone"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/question_image"
-                android:layout_centerVertical="true"
-                android:padding="7dp"
-                android:paddingStart="30dp"
-                android:maxLines="3"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:background="@drawable/shape_bg_incoming_bubble"
-                android:textColor="#FFF"
-                android:textSize="18dp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                android:orientation="vertical"
+                android:layout_marginEnd="30dp"
+                android:gravity="left"
+                android:padding="10dp">
 
-        <LinearLayout
-            android:id="@+id/question_answers_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="10dp"
-            android:layout_marginStart="30dp">
+                <TextView
+                    android:id="@+id/question_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/question_image"
+                    android:layout_centerVertical="true"
+                    android:padding="7dp"
+                    android:paddingStart="30dp"
+                    android:maxLines="3"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:background="@drawable/shape_bg_incoming_bubble"
+                    android:textColor="#FFF"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
-            <EditText
-                android:id="@+id/question_answer_text"
+            <LinearLayout
+                android:id="@+id/question_answers_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:layout_marginStart="5dp"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp"
+                android:gravity="right"
+                android:layout_marginStart="30dp">
 
-            <Button
-                android:id="@+id/question_answer_send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:padding="5dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:background="@drawable/button_drawable"
-                android:text="Send" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/question_answer_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:layout_marginStart="5dp"/>
+
+                <Button
+                    android:id="@+id/question_answer_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:background="@drawable/button_drawable"
+                    android:text="Send" />
+
+            </LinearLayout>
 
         </LinearLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
 
-    </LinearLayout>
-</android.support.v7.widget.CardView>

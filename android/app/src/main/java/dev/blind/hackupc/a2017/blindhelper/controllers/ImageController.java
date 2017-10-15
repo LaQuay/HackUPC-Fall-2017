@@ -12,6 +12,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
+import dev.blind.hackupc.a2017.blindhelper.R;
+
 /**
  * Created by LaQuay on 14/10/2017.
  */
@@ -45,7 +47,7 @@ public class ImageController {
     private Uri getUrifromFile(File newfile) {
         Uri uri;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", newfile);
+            uri = FileProvider.getUriForFile(context, context.getString(R.string.file_provider_authority), newfile);
         } else {
             uri = Uri.fromFile(newfile);
         }
