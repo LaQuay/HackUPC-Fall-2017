@@ -230,7 +230,9 @@ public class MainActivityFragment extends Fragment implements BackendController.
         } else {
             try {
                 dialog.dismiss();
-                createModal("You have been answered", jsonArray.get(0).toString());
+                String text = jsonArray.getJSONObject(0).getString("text");
+                String user = jsonArray.getJSONObject(0).getString("user");
+                createModal("You have been answered", "Answer " + text + ", from " + user);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
