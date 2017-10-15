@@ -38,7 +38,7 @@ import dev.blind.hackupc.a2017.blindhelper.utils.MultipartUtils;
 
     ANSWERS
     GET http://8239eda1.ngrok.io/answers/<questionId>
-    POST http://8239eda1.ngrok.io/<username>/<questionId>
+    POST http://8239eda1.ngrok.io/answer/<username>/<questionId>
        body={text=<answer>} (edited)
 
    IMAGES
@@ -60,7 +60,7 @@ public class BackendController {
     public static final String ADD_QUESTION_URL = BASE_URL + "question/";
     // Answers
     public static final String GET_ANSWER_URL = BASE_URL + "answers/";
-    public static final String ADD_ANSWER_URL = BASE_URL;
+    public static final String ADD_ANSWER_URL = BASE_URL + "answer/";
     // Images
     public static final String GET_IMAGE_URL = BASE_URL + "image/";
     public static final String ADD_IMAGE_URL = BASE_URL + "image";
@@ -78,7 +78,7 @@ public class BackendController {
     }
 
     public static void addAnswer(String username, String questionid, String answer, ResponseServerCallback responseServerCallback) {
-        Log.e(TAG, "Sending to server -addImage-: " + username + ", " + questionid + ", " + answer);
+        Log.e(TAG, "Sending to server -addAnswer-: " + username + ", " + questionid + ", " + answer);
         PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
         photoToServerAsyncTask.execute(ADD_ANSWER_URL, responseServerCallback, username, questionid, answer);
     }
