@@ -16,16 +16,38 @@ public class GooglePlacesController {
     private static final String TAG = GooglePlacesController.class.getSimpleName();
     private static final String mapsKey = "AIzaSyCScWRCp0MaVnBvfz9MMMWz30nh0FmSRLw";
 
-    public static String createUrlWithFilters(Double lat, Double lng) {
+    public static String createUrlWithFilters(Double lat, Double lng,
+                                              boolean restaurants, boolean monuments, boolean pharmacy,
+                                              boolean market, boolean banks, boolean postOffice) {
+        String type = "";
+        if (restaurants) {
+            type = "restaurants|";
+        }
+        if (monuments) {
+            type += "museum|";
+        }
+        if (pharmacy) {
+            type += "pharmacy|";
+        }
+        if (market) {
+            type += "store|";
+        }
+        if (banks) {
+            type += "bank|";
+        }
+        if (postOffice) {
+            type += "post_office|";
+        }
+
         return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat + "," + lng + "&radius=500" +
-                "&type=restaurant&key=" + mapsKey;
+                "&types=" + type + "&key=" + mapsKey;
     }
 
     public static ArrayList<MyPlaces> getPlacesFromGoogleJSON(JSONObject jsonObject) {
         try {
             if (jsonObject.getString("status").equals("OK")) {
-                JSONArray results = jsonObject.getJSONArray("results");
                 ArrayList<MyPlaces> myPlaces = new ArrayList<>();
+                JSONArray results = jsonObject.getJSONArray("results");
                 for (int i = 0; i < results.length(); ++i) {
                     MyPlaces place = new MyPlaces();
                     JSONObject placeJSONObject = results.getJSONObject(i);

@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.CheckBox;
+import android.view.View;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import dev.blind.hackupc.a2017.blindhelper.components.SpeechRadioButton;
 import dev.blind.hackupc.a2017.blindhelper.controllers.GooglePlacesController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.LocationController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
@@ -39,9 +40,13 @@ import dev.blind.hackupc.a2017.blindhelper.model.MyPlaces;
 
 public class AroundMeActivity extends AppCompatActivity implements LocationController.OnNewLocationCallback, OnMapReadyCallback {
     private static final String TAG = AroundMeActivity.class.getSimpleName();
-    private static final float DEFAULT_CAMERA_ZOOM = 14f;
-    private CheckBox restaurantsCheckBox;
-    private CheckBox museumsCheckBox;
+    private static final float DEFAULT_CAMERA_ZOOM = 16f;
+    private SpeechRadioButton restaurantsCheckBox;
+    private SpeechRadioButton monumentCheckBox;
+    private SpeechRadioButton pharmacyCheckBox;
+    private SpeechRadioButton marketCheckBox;
+    private SpeechRadioButton banksCheckBox;
+    private SpeechRadioButton postOfficeCheckBox;
 
     private MyLocation myLocation;
     private GoogleMap mMap;
@@ -54,6 +59,9 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         setContentView(R.layout.activity_around_me);
 
         setUpElements();
+        setUpListeners();
+
+        restaurantsCheckBox.setChecked(true);
 
         LocationController.getInstance(this).startLocation(this);
 
@@ -68,10 +76,58 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
     }
 
     private void setUpElements() {
-        restaurantsCheckBox = (CheckBox) findViewById(R.id.checkbox_restaurants);
-        museumsCheckBox = (CheckBox) findViewById(R.id.checkbox_museums);
+        restaurantsCheckBox = findViewById(R.id.checkbox_restaurants);
+        monumentCheckBox = findViewById(R.id.checkbox_monuments);
+        pharmacyCheckBox = findViewById(R.id.checkbox_pharmacy);
+        marketCheckBox = findViewById(R.id.checkbox_market);
+        banksCheckBox = findViewById(R.id.checkbox_banks);
+        postOfficeCheckBox = findViewById(R.id.checkbox_post_office);
 
-        mapView = (MapView) findViewById(R.id.around_me_map);
+        mapView = findViewById(R.id.around_me_map);
+    }
+
+    private void setUpListeners() {
+        restaurantsCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCallWithFilters();
+            }
+        });
+
+        monumentCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCallWithFilters();
+            }
+        });
+
+        pharmacyCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCallWithFilters();
+            }
+        });
+
+        marketCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCallWithFilters();
+            }
+        });
+
+        banksCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCallWithFilters();
+            }
+        });
+
+        postOfficeCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCallWithFilters();
+            }
+        });
     }
 
     public void makeRequestGooglePlaces(String url) {
@@ -80,9 +136,12 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         JsonObjectRequest request = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                ArrayList<MyPlaces> myPlaces = GooglePlacesController.getPlacesFromGoogleJSON(jsonObject);
+                removeMarkersInMap();
 
-                drawMarkersInMap(myPlaces);
+                ArrayList<MyPlaces> myPlaces = GooglePlacesController.getPlacesFromGoogleJSON(jsonObject);
+                if (myPlaces != null && !myPlaces.isEmpty()) {
+                    drawMarkersInMap(myPlaces);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -91,6 +150,10 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
             }
         });
         VolleyController.getInstance(this).addToQueue(request);
+    }
+
+    private void removeMarkersInMap() {
+        mMap.clear();
     }
 
     private void drawMarkersInMap(ArrayList<MyPlaces> myPlaces) {
@@ -105,7 +168,9 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
     }
 
     private void createCallWithFilters() {
-        String url = GooglePlacesController.createUrlWithFilters(myLocation.getLat(), myLocation.getLng());
+        String url = GooglePlacesController.createUrlWithFilters(myLocation.getLat(), myLocation.getLng(),
+                restaurantsCheckBox.isChecked(), monumentCheckBox.isChecked(), pharmacyCheckBox.isChecked(),
+                marketCheckBox.isChecked(), banksCheckBox.isChecked(), postOfficeCheckBox.isChecked());
 
         makeRequestGooglePlaces(url);
     }
@@ -135,7 +200,6 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
                     LatLng latLng = new LatLng(myLocation.getLat(), myLocation.getLng());
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_CAMERA_ZOOM));
 
-                    //TODO Cambiar de sitio
                     createCallWithFilters();
                 } else {
                     handler.postDelayed(this, 250);
