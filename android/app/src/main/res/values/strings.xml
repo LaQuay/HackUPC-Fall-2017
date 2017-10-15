@@ -8,4 +8,7 @@
     <string name="watson_key" templateMergeStrategy="preserve" translatable="false">
         41579b81933f743adaf2ad2556efa9b4abf8843a
     </string>
+
+    <string name="file_provider_authority" translatable="false">dev.blind.hackupc.a2017.blindhelper.fileprovider</string>
+
 </resources>
