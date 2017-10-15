@@ -63,8 +63,8 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
                     TextView answerTextView = new TextView(mContext);
                     answerTextView.setText(text);
                     answerTextView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_bg_outgoing_bubble));
-                    answerTextView.setPadding((int)(metrics.density*30+0.5f),(int)(metrics.density*7+0.5f),
-                            (int)(metrics.density*7+0.5f), (int)(metrics.density*7+0.5f));
+                    answerTextView.setPadding((int)(metrics.density*10+0.5f),(int)(metrics.density*7+0.5f),
+                            (int)(metrics.density*20+0.5f), (int)(metrics.density*7+0.5f));
                     answerTextView.setTextColor(Color.WHITE);
                     answerTextView.setTextSize(18);
                     answerTextView.setTypeface(answerTextView.getTypeface(), Typeface.BOLD);
@@ -73,7 +73,8 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
                     lLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT));
                     lLayout.setOrientation(LinearLayout.VERTICAL);
-                    lLayout.setPadding(0,0,0,10);
+                    lLayout.setPadding((int)(metrics.density*30+0.5f),(int)(metrics.density*0+0.5f),
+                            (int)(metrics.density*0+0.5f), (int)(metrics.density*10+0.5f));
                     lLayout.addView(answerTextView);
 
                     customViewHolder.linearLayout.addView(lLayout);

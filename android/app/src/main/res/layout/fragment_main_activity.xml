@@ -23,7 +23,7 @@
             android:drawableLeft="@drawable/ic_location"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Where am I?"
+            android:text="Location"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
 
@@ -42,7 +42,7 @@
             android:drawableLeft="@drawable/ic_group"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Around me"
+            android:text="Close to me"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
 
@@ -61,7 +61,7 @@
             android:drawableLeft="@drawable/ic_eyes"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Be my eyes"
+            android:text="Look for me"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
 
@@ -80,7 +80,7 @@
             android:drawableLeft="@drawable/ic_read"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Read for me"
+            android:text="Read a text"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="23sp" />
 
