@@ -21,29 +21,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_drawable"
-            android:drawableLeft="@drawable/common_full_open_on_phone"
+            android:drawableLeft="@drawable/ic_answer"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Photo Answer"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/main_fragment_helper_video"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_drawable"
-            android:drawableLeft="@drawable/common_full_open_on_phone"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="Video Answer"
+            android:text="Answer"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
 

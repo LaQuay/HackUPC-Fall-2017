@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, send_file, redirect, url_for, send_fr
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 import os
+import datetime
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 def allowed_file(filename):
@@ -61,7 +62,7 @@ def add_user():
     # TODO: check username does not exist
     usersDB = mongo.db.users
     username = request.json['username']
-    user = usersDB.insert({'username': username})
+    user = usersDB.insert({'username': username, "date": str(datetime.datetime.now().time())})
     new_user = usersDB.find_one({'_id': user })
     output = {'username' : new_user['username']}
     return jsonify({'result' : output})
@@ -95,7 +96,7 @@ def add_question(username):
         if f:
             questionsDB = mongo.db.questions
             text = request.form['text']
-            question = questionsDB.insert({'text': text, 'user': username})
+            question = questionsDB.insert({'text': text, 'user': username, "date": str(datetime.datetime.now().time())})
             new_question = questionsDB.find_one({'_id': question})
             output = {'_id': str(question), 'text': new_question['text']}
 
@@ -147,7 +148,7 @@ def add_answer(username, questionid):
         if question:
             answersDB = mongo.db.answers
             text = request.json['text']
-            answer = answersDB.insert({'text': text, 'user': username, 'questionId': questionid})
+            answer = answersDB.insert({'text': text, 'user': username, 'questionId': questionid, "date": str(datetime.datetime.now().time())})
             new_answer = answersDB.find_one({'_id': answer})
             output = {'text': new_answer['text']}
             return jsonify({'result': output})
@@ -180,8 +181,8 @@ def add_image():
 
         path = os.path.join(app.config['OCR_UPLOAD_FOLDER'], filename)
         f.save(path)
-
-        output = filenum
+        
+        output = {'_id': "0", 'text': filenum}
 
     return jsonify({'result' : output})
 

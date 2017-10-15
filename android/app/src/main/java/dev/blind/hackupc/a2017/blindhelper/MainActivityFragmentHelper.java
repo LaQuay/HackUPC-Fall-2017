@@ -40,7 +40,6 @@ public class MainActivityFragmentHelper extends Fragment {
 
     private void setUpElements() {
         buttonPhoto = rootview.findViewById(R.id.main_fragment_helper_photo);
-        buttonVideo = rootview.findViewById(R.id.main_fragment_helper_video);
     }
 
     private void setUpListeners() {
@@ -48,14 +47,6 @@ public class MainActivityFragmentHelper extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PhotoAnswerActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        buttonVideo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //openImageChooser();
-                //Intent intent = new Intent(getActivity(), AroundMeActivity.class);
-                //startActivity(intent);
             }
         });
     }
