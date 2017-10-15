@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +30,7 @@ import dev.blind.hackupc.a2017.blindhelper.components.SpeechButton;
 import dev.blind.hackupc.a2017.blindhelper.controllers.BackendController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.ImageController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.OCRController;
+import dev.blind.hackupc.a2017.blindhelper.controllers.TextToSpeechController;
 import dev.blind.hackupc.a2017.blindhelper.utils.ImageUtils;
 
 public class MainActivityFragment extends Fragment implements BackendController.ResponseServerCallback, dev.blind.hackupc.a2017.blindhelper.controllers.OCRController.OCRResolvedCallback {
@@ -163,7 +165,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
     public void uploadQuestionToAPI(String uriToUpload) {
         Toast.makeText(getActivity(), "Uploading photo", Toast.LENGTH_SHORT).show();
 
-        BackendController.addQuestion("usuario123", "Pregunta de prueba2", uriToUpload, this);
+        BackendController.addQuestion("usuario123", "Can you describe me the photo, please?", uriToUpload, this);
     }
 
     public void uploadImageToAPI(String uriToUpload) {
@@ -172,7 +174,7 @@ public class MainActivityFragment extends Fragment implements BackendController.
         BackendController.addImage(uriToUpload, this);
     }
 
-    private void createModal(String title, String value) {
+    private void createModal(final String title, final String value) {
         dialog = new AlertDialog.Builder(getContext())
                 .setTitle(title)
                 .setMessage(value)
@@ -187,15 +189,14 @@ public class MainActivityFragment extends Fragment implements BackendController.
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e(TAG, "Aquí debería volver a sonar lo que hay dentro");
+                        TextToSpeechController.getInstance(getContext()).speak(title + ". " + value, TextToSpeech.QUEUE_FLUSH);
                     }
                 });
             }
         });
 
         dialog.show();
-
-        Log.e(TAG, "Aquí debería sonar lo que hay en value");
+        TextToSpeechController.getInstance(getContext()).speak(title + ". " + value, TextToSpeech.QUEUE_FLUSH);
     }
 
     private Bitmap readImageFromResources(Uri uriToRead) throws IOException {
