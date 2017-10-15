@@ -147,7 +147,7 @@ def add_answer(username, questionid):
         question = questionsDB.find_one({'_id': ObjectId(questionid)})
         if question:
             answersDB = mongo.db.answers
-            text = request.json['text']
+            text = request.form['text']
             answer = answersDB.insert({'text': text, 'user': username, 'questionId': questionid, "date": str(datetime.datetime.now().time())})
             new_answer = answersDB.find_one({'_id': answer})
             output = {'text': new_answer['text']}
