@@ -102,7 +102,7 @@ def add_question(username):
             filename = str(question) + ".png"
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             f.save(path)
-            output = 'image uploaded successfully'
+            #output = 'image uploaded successfully'
     else:
         output = "No such user"
     return jsonify({'result' : output})

@@ -5,11 +5,15 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IdRes;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -43,12 +47,15 @@ import dev.blind.hackupc.a2017.blindhelper.model.MyPlaces;
 public class AroundMeActivity extends AppCompatActivity implements LocationController.OnNewLocationCallback, OnMapReadyCallback {
     private static final String TAG = AroundMeActivity.class.getSimpleName();
     private static final float DEFAULT_CAMERA_ZOOM = 16f;
+    private RadioGroup radioGroup;
     private SpeechRadioButton restaurantsCheckBox;
     private SpeechRadioButton monumentCheckBox;
     private SpeechRadioButton pharmacyCheckBox;
     private SpeechRadioButton marketCheckBox;
     private SpeechRadioButton banksCheckBox;
     private SpeechRadioButton postOfficeCheckBox;
+
+    private SpeechRadioButton mBtnCurrentRadio;
 
     private MyLocation myLocation;
     private GoogleMap mMap;
@@ -78,12 +85,16 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
     }
 
     private void setUpElements() {
+        radioGroup = findViewById(R.id.rdgGrupo);
+
         restaurantsCheckBox = findViewById(R.id.checkbox_restaurants);
         monumentCheckBox = findViewById(R.id.checkbox_monuments);
         pharmacyCheckBox = findViewById(R.id.checkbox_pharmacy);
         marketCheckBox = findViewById(R.id.checkbox_market);
         banksCheckBox = findViewById(R.id.checkbox_banks);
         postOfficeCheckBox = findViewById(R.id.checkbox_post_office);
+
+        mBtnCurrentRadio = restaurantsCheckBox;
 
         mapView = findViewById(R.id.around_me_map);
     }
@@ -92,6 +103,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         restaurantsCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onClickSwitchRadioButton(v);
                 createCallWithFilters();
             }
         });
@@ -99,6 +111,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         monumentCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onClickSwitchRadioButton(v);
                 createCallWithFilters();
             }
         });
@@ -106,6 +119,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         pharmacyCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onClickSwitchRadioButton(v);
                 createCallWithFilters();
             }
         });
@@ -113,6 +127,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         marketCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onClickSwitchRadioButton(v);
                 createCallWithFilters();
             }
         });
@@ -120,6 +135,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         banksCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onClickSwitchRadioButton(v);
                 createCallWithFilters();
             }
         });
@@ -127,6 +143,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
         postOfficeCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onClickSwitchRadioButton(v);
                 createCallWithFilters();
             }
         });
@@ -171,6 +188,8 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
     }
 
     private void createCallWithFilters() {
+        //double lat = 41.2f;
+        //double lng = 2.11f;
         String url = GooglePlacesController.createUrlWithFilters(myLocation.getLat(), myLocation.getLng(),
                 restaurantsCheckBox.isChecked(), monumentCheckBox.isChecked(), pharmacyCheckBox.isChecked(),
                 marketCheckBox.isChecked(), banksCheckBox.isChecked(), postOfficeCheckBox.isChecked());
@@ -217,5 +236,19 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
                 TextToSpeechController.getInstance(getBaseContext()).speak(marker.getTitle() + ", " + marker.getSnippet(), TextToSpeech.QUEUE_FLUSH);
             }
         });
+    }
+
+
+    public void onClickSwitchRadioButton(View v) {
+        final SpeechRadioButton mBtnRadio = (SpeechRadioButton) v;
+
+        radioGroup.clearCheck();
+
+        // select only one radio button at any given time
+        if (mBtnCurrentRadio != null) {
+            mBtnCurrentRadio.setChecked(false);
+        }
+        mBtnRadio.setChecked(true);
+        mBtnCurrentRadio = mBtnRadio;
     }
 }
