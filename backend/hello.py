@@ -180,8 +180,8 @@ def add_image():
 
         path = os.path.join(app.config['OCR_UPLOAD_FOLDER'], filename)
         f.save(path)
-
-        output = filenum
+        
+        output = {'_id': "0", 'text': filenum}
 
     return jsonify({'result' : output})
 
