@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import dev.blind.hackupc.a2017.blindhelper.R;
 import dev.blind.hackupc.a2017.blindhelper.model.MyPlaces;
 
 /**
@@ -21,7 +22,7 @@ public class GooglePlacesController {
                                               boolean market, boolean banks, boolean postOffice) {
         String type = "";
         if (restaurants) {
-            type = "restaurants|";
+            type = "restaurant|";
         }
         if (monuments) {
             type += "museum|";
@@ -76,5 +77,33 @@ public class GooglePlacesController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static int getBestIntDrawableForType(ArrayList<String> types) {
+        int drawableSelected = 0;
+
+        for (int i = 0; i < types.size(); ++i) {
+            if (types.get(i).equals("restaurant")) {
+                drawableSelected = R.drawable.icon_restaurant;
+            } else if (types.get(i).equals("museum")) {
+                drawableSelected = R.drawable.icon_museum;
+            } else if (types.get(i).equals("pharmacy")) {
+                drawableSelected = R.drawable.icon_pharmacy;
+            } else if (types.get(i).equals("market")) {
+                drawableSelected = R.drawable.icon_shop;
+            } else if (types.get(i).equals("bank")) {
+                drawableSelected = R.drawable.icon_bank;
+            } else if (types.get(i).equals("post_office")) {
+                drawableSelected = R.drawable.icon_postal_office;
+            }
+
+            if (drawableSelected != 0) break;
+        }
+
+        if (drawableSelected == 0) {
+            drawableSelected = R.drawable.icon_postal_office;
+        }
+
+        return drawableSelected;
     }
 }

@@ -162,7 +162,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(currentPlace.getLat(), currentPlace.getLng()))
                     .title(currentPlace.getName())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    .icon(BitmapDescriptorFactory.fromResource(GooglePlacesController.getBestIntDrawableForType(currentPlace.getTypes()))));
             marker.setTag(i);
         }
     }
