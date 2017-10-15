@@ -1,8 +1,12 @@
 package dev.blind.hackupc.a2017.blindhelper.controllers;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import dev.blind.hackupc.a2017.blindhelper.model.MyPlaces;
 import dev.blind.hackupc.a2017.blindhelper.model.Question;
 import dev.blind.hackupc.a2017.blindhelper.utils.MultipartUtils;
 
@@ -80,6 +83,29 @@ public class BackendController {
         photoToServerAsyncTask.execute(ADD_ANSWER_URL, responseServerCallback, username, questionid, answer);
     }
 
+    public static void getAnswer(final Context context, String questionID, final ResponseServerCallback responseServerCallback) {
+        JsonObjectRequest request = new JsonObjectRequest(GET_ANSWER_URL + questionID, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    Log.e(TAG, String.valueOf(jsonObject));
+                    JSONObject jsonResult = jsonObject.getJSONObject("result");
+                    JSONArray jsonArrayAnswers = jsonResult.getJSONArray("answers");
+
+                    responseServerCallback.onResponseGetAnswer(jsonArrayAnswers);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                VolleyController.getInstance(context).onConnectionFailed(volleyError.toString());
+            }
+        });
+        VolleyController.getInstance(context).addToQueue(request);
+    }
+
     public static ArrayList<Question> getQuestionsJSON(JSONObject jsonObject) {
         try {
             JSONArray results = jsonObject.getJSONArray("result");
@@ -102,7 +128,9 @@ public class BackendController {
     }
 
     public interface ResponseServerCallback {
-        void onResponseServer(String petition, String message);
+        void onResponseServer(String petition, String id, String text);
+
+        void onResponseGetAnswer(JSONArray jsonArray);
     }
 
     private static class PhotoToServerAsyncTask extends AsyncTask<Object, Void, String> {
@@ -153,7 +181,8 @@ public class BackendController {
             if (response != null && !response.isEmpty()) {
                 try {
                     JSONObject jsonObj = new JSONObject(response);
-                    callback.onResponseServer(petitionTask, jsonObj.getString("result"));
+                    JSONObject jsonResult = jsonObj.getJSONObject("result");
+                    callback.onResponseServer(petitionTask, jsonResult.getString("_id"), jsonResult.getString("text"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

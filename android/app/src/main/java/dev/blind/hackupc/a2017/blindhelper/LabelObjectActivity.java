@@ -19,6 +19,8 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.ImageClassific
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.VisualClassification;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.VisualClassifier;
 
+import org.json.JSONArray;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -178,10 +180,15 @@ public class LabelObjectActivity extends AppCompatActivity implements BackendCon
     }
 
     @Override
-    public void onResponseServer(String petition, String message) {
+    public void onResponseServer(String petition, String message, String text) {
         String url = BackendController.GET_IMAGE_URL + message;
         Log.e(TAG, "URL to VisualRecognition: " + url);
         setVisualRecognitionData(url);
+    }
+
+    @Override
+    public void onResponseGetAnswer(JSONArray jsonArray) {
+
     }
 
     private class CustomComparator implements Comparator<VisualClassifier.VisualClass> {

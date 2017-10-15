@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +49,9 @@ public class MainActivityFragment extends Fragment implements BackendController.
     private String cameraDirectory;
     private ImageController imageController;
     private OCRController OCRController;
+    private String lastQuestionID;
+    private Handler handler = new Handler();
+    private AlertDialog dialog;
 
     public static MainActivityFragment newInstance() {
         return new MainActivityFragment();
@@ -165,9 +172,9 @@ public class MainActivityFragment extends Fragment implements BackendController.
         BackendController.addImage(uriToUpload, this);
     }
 
-    private void createModal(String value) {
-        final AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("Results")
+    private void createModal(String title, String value) {
+        dialog = new AlertDialog.Builder(getContext())
+                .setTitle(title)
                 .setMessage(value)
                 .setPositiveButton("Accept", null)
                 .setNegativeButton("Repeat", null)
@@ -196,21 +203,49 @@ public class MainActivityFragment extends Fragment implements BackendController.
     }
 
     @Override
-    public void onResponseServer(String petition, String message) {
-        Log.e(TAG, "RESPONSE FROM SERVER: " + message);
-        // La idea podria ser aquí esperar en un bucle a que el servidor tuviera algun valor escrito
-        // y entonces hacer el createModal con ese valor
+    public void onResponseServer(String petition, String id, String text) {
+        Log.e(TAG, "onResponseServer: " + id + ", " + text);
 
         if (petition.equals(BackendController.ADD_QUESTION_URL)) {
-
+            createModal("Asked successfully", "Wait to be answered...");
+            lastQuestionID = id;
+            askForAnswer(lastQuestionID);
         } else if (petition.equals(BackendController.ADD_IMAGE_URL)) {
-            OCRController.imageOCRRequest(BackendController.GET_IMAGE_URL + message, this);
+            Toast.makeText(getContext(), "Doing OCR", Toast.LENGTH_SHORT).show();
+            OCRController.imageOCRRequest(BackendController.GET_IMAGE_URL + text, this);
         }
     }
 
     @Override
+    public void onResponseGetAnswer(JSONArray jsonArray) {
+        Log.e(TAG, "onResponseGetAnswer: " + jsonArray.toString());
+
+        if (jsonArray.length() == 0) {
+            final Runnable r = new Runnable() {
+                public void run() {
+                    askForAnswer(lastQuestionID);
+                }
+            };
+            handler.postDelayed(r, 2000);
+        } else {
+            try {
+                dialog.dismiss();
+                String text = jsonArray.getJSONObject(0).getString("text");
+                String user = jsonArray.getJSONObject(0).getString("user");
+                createModal("You have been answered", "Answer " + text + ", from " + user);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void askForAnswer(String questionID) {
+        BackendController.getAnswer(getContext(), questionID, this);
+    }
+
+    @Override
     public void onImageOCRResolved(String message) {
-        Log.e(TAG, "RESPONSE FROM OCR: " + message);
-        createModal(message);
+        Log.e(TAG, "onImageOCRResolved: " + message);
+        createModal("Results", message);
     }
 }
