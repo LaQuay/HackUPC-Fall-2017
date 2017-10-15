@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,10 +60,13 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
                     //BackendController.addAnswer("usuario666", question.getId(), text, this);
                     ((PhotoAnswerActivity)mContext).addAnswer("usuario666", question.getId(), text);
 
+                    DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+
                     TextView answerTextView = new TextView(mContext);
                     answerTextView.setText(text);
                     answerTextView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_bg_outgoing_bubble));
-                    answerTextView.setPadding(30,7,7,7);
+                    answerTextView.setPadding((int)(metrics.density*30+0.5f),(int)(metrics.density*7+0.5f),
+                            (int)(metrics.density*7+0.5f), (int)(metrics.density*7+0.5f));
                     answerTextView.setTextColor(Color.WHITE);
                     answerTextView.setTextSize(18);
                     answerTextView.setTypeface(answerTextView.getTypeface(), Typeface.BOLD);
@@ -75,6 +79,7 @@ public class PhotoQuestionAdapter extends RecyclerView.Adapter<PhotoQuestionAdap
                     lLayout.addView(answerTextView);
 
                     customViewHolder.linearLayout.addView(lLayout);
+                    customViewHolder.editView.setText("");
                 }
             }
         });
