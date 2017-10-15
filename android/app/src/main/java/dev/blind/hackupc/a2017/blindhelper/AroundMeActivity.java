@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import dev.blind.hackupc.a2017.blindhelper.components.SpeechRadioButton;
 import dev.blind.hackupc.a2017.blindhelper.controllers.GooglePlacesController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.LocationController;
+import dev.blind.hackupc.a2017.blindhelper.controllers.TextToSpeechController;
 import dev.blind.hackupc.a2017.blindhelper.controllers.VolleyController;
 import dev.blind.hackupc.a2017.blindhelper.model.MyLocation;
 import dev.blind.hackupc.a2017.blindhelper.model.MyPlaces;
@@ -162,6 +164,7 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(currentPlace.getLat(), currentPlace.getLng()))
                     .title(currentPlace.getName())
+                    .snippet(currentPlace.getAddress())
                     .icon(BitmapDescriptorFactory.fromResource(GooglePlacesController.getBestIntDrawableForType(currentPlace.getTypes()))));
             marker.setTag(i);
         }
@@ -207,5 +210,12 @@ public class AroundMeActivity extends AppCompatActivity implements LocationContr
             }
         };
         handler.post(r);
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                TextToSpeechController.getInstance(getBaseContext()).speak(marker.getTitle() + ", " + marker.getSnippet(), TextToSpeech.QUEUE_FLUSH);
+            }
+        });
     }
 }
