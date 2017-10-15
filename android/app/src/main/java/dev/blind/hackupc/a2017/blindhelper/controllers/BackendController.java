@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +17,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import dev.blind.hackupc.a2017.blindhelper.model.Question;
 import dev.blind.hackupc.a2017.blindhelper.utils.MultipartUtils;
@@ -77,10 +81,34 @@ public class BackendController {
         photoToServerAsyncTask.execute(ADD_IMAGE_URL, responseServerCallback, null, null, imageURIToUpload);
     }
 
-    public static void addAnswer(String username, String questionid, String answer, ResponseServerCallback responseServerCallback) {
+    public static void addAnswer(Context context, String username, String questionid, String answer, ResponseServerCallback responseServerCallback) {
         Log.e(TAG, "Sending to server -addAnswer-: " + username + ", " + questionid + ", " + answer);
-        PhotoToServerAsyncTask photoToServerAsyncTask = new PhotoToServerAsyncTask();
-        photoToServerAsyncTask.execute(ADD_ANSWER_URL, responseServerCallback, username, questionid, answer);
+        testPost(context, responseServerCallback, ADD_ANSWER_URL, username, questionid, answer);
+    }
+
+    private static void testPost(Context context, ResponseServerCallback responseServerCallback, String url, String username, String questionid, final String answer) {
+        final StringRequest postRequest = new StringRequest(Request.Method.POST, url + username + "/" + questionid,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", error.getMessage());
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("text", answer);
+
+                return params;
+            }
+        };
+        VolleyController.getInstance(context).addToQueue(postRequest);
     }
 
     public static void getAnswer(final Context context, String questionID, final ResponseServerCallback responseServerCallback) {

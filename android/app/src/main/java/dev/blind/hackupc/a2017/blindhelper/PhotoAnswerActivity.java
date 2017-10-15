@@ -71,7 +71,7 @@ public class PhotoAnswerActivity extends AppCompatActivity implements BackendCon
     }
 
     public void addAnswer(String username, String id, String text) {
-        BackendController.addAnswer(username, id, text, this);
+        BackendController.addAnswer(getApplicationContext(), username, id, text, this);
     }
 
     @Override
